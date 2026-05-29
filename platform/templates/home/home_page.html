@@ -8,6 +8,9 @@
 
   <!-- HERO -->
   <section id="hero">
+    <canvas id="ces-hero-canvas" class="hero-video-bg"></canvas>
+    <div class="hero-video-overlay"></div>
+
     <div class="hero-meta">
       <div class="meta-left">
         <span class="status-pill"><span class="status-dot"></span>Accepting 2 Partnerships for Q3 2026</span>
@@ -332,4 +335,8 @@
     </div>
   </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/hero-animation.js' %}" defer></script>
 {% endblock %}
