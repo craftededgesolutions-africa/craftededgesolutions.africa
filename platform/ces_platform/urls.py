@@ -6,12 +6,12 @@ from django.urls import include, path
 
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
+from core.sitemaps import MainSitemap
 from core.views import careers, contact_api, llms_txt, pricing, robots_txt
 
-wagtail_sitemaps = {"wagtail": WagtailSitemap}
+sitemaps = {"pages": MainSitemap}
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
@@ -29,7 +29,7 @@ urlpatterns = [
     path("agents/", include("agents.urls")),
     path("robots.txt", robots_txt, name="robots_txt"),
     path("llms.txt", llms_txt, name="llms_txt"),
-    path("sitemap.xml", sitemap, {"sitemaps": wagtail_sitemaps}, name="sitemap"),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("", include(wagtail_urls)),
 ]
 
