@@ -1,0 +1,51 @@
+# Render Blueprint — Crafted Edge Solutions platform (Django 5.2 + Wagtail 6.4)
+# Mirrors the previous Railway setup (platform/railway.json).
+# This file lives at the REPO ROOT; the service's code root is `platform/`.
+#
+# First deploy is fully automated and idempotent:
+#   collectstatic -> migrate -> bootstrap_pages (page tree) -> seed_content
+#   (insights posts + case studies) -> optional superuser.
+#
+# Prereq: a PostgreSQL DATABASE_URL (Neon free recommended — use the DIRECT,
+# non-pooler connection string with ?sslmode=require). You'll paste it when
+# Render prompts for the sync:false vars during Blueprint creation.
+
+services:
+  - type: web
+    name: craftededge-platform
+    runtime: python
+    plan: free            # upgrade to "starter" (~$7/mo) to remove ~50s cold starts
+    region: frankfurt     # closest Render region to East Africa
+    rootDir: platform
+    branch: main
+    healthCheckPath: /
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py bootstrap_pages && python manage.py seed_content && (python manage.py createsuperuser --noinput || true)"
+    startCommand: "gunicorn ces_platform.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"          # if Render rejects it, set any available 3.12.x
+      - key: DJANGO_SETTINGS_MODULE
+        value: ces_platform.settings.base
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true       # Render generates a strong key automatically
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "craftededgesolutions.africa,www.craftededgesolutions.africa,.onrender.com"
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: "https://craftededgesolutions.africa,https://www.craftededgesolutions.africa"
+      - key: WAGTAILADMIN_BASE_URL
+        value: "https://craftededgesolutions.africa"
+      # --- paste at Blueprint creation ---
+      # Neon: use the DIRECT connection string (NOT the "-pooler" host) to avoid
+      # psycopg3 + PgBouncer prepared-statement errors. Must include ?sslmode=require.
+      - key: DATABASE_URL
+        sync: false
+      # --- optional: set all three to auto-create a CMS/admin login on deploy ---
+      # Safe to leave unset; the build skips superuser creation if they're absent.
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
