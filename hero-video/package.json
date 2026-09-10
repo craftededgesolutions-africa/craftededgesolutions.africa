@@ -1,0 +1,26 @@
+{
+  "name": "hero-video",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render:4k": "remotion render src/index.ts CESHero out/ces-hero-4k.mp4 --codec=h264 --crf=14",
+    "render:1080": "remotion render src/index.ts CESHeroPreview out/ces-hero-1080.mp4 --codec=h264 --crf=18",
+    "render:webm": "remotion render src/index.ts CESHeroPreview out/ces-hero-1080.webm --codec=vp8 --crf=24",
+    "render:still": "remotion still src/index.ts CESHero out/still.png --frame=750"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@remotion/cli": "^4.0.469",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.469",
+    "typescript": "^6.0.3"
+  }
+}

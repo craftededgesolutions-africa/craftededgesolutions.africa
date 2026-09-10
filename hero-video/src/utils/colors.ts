@@ -1,0 +1,18 @@
+export const COLORS = {
+  bg:          '#0a0a0b',
+  bgElev:      '#111113',
+  bgCard:      '#131316',
+  fg:          '#f4f4ef',
+  fgMid:       '#a8a8a3',
+  fgDim:       '#6b6b68',
+  accent:      '#e89240',
+  accentSoft:  'rgba(232,146,64,0.12)',
+  accentGlow:  'rgba(232,146,64,0.06)',
+  platinum:    '#d4d4cc',
+  platinumDim: 'rgba(212,212,204,0.4)',
+  gridLine:    'rgba(245,245,240,0.07)',
+  gridStrong:  'rgba(245,245,240,0.14)',
+  gold:        '#e89240',
+  goldDim:     'rgba(232,146,64,0.35)',
+  goldTrace:   'rgba(232,146,64,0.15)',
+};

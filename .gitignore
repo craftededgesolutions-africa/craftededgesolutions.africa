@@ -15,3 +15,8 @@ Thumbs.db
 
 # Local-only files
 THEME_CHEATSHEET.md
+
+# Remotion hero video — build output and deps only; src/ is tracked
+hero-video/node_modules/
+hero-video/out/
+hero-video/db.sqlite3

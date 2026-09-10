@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Stack Cheatsheet — Crafted Edge</title>
 <style>
-  :root { --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a; --text: #e2e8f0; --muted: #94a3b8; --accent: #7c3aed; --green: #10b981; --blue: #3b82f6; --yellow: #f59e0b; --red: #ef4444; }
+  :root { --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3a; --text: #e2e8f0; --muted: #94a3b8; --accent: #7c3aed; --green: #10b981; --blue: #3b82f6; --yellow: #f59e0b; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.7; padding: 2rem 1rem; }
   .container { max-width: 860px; margin: 0 auto; }
@@ -13,9 +13,9 @@
   h1 + blockquote { color: var(--muted); font-size: .9rem; margin-bottom: 2rem; border: none; padding: 0; }
   h2 { font-size: 1.15rem; color: var(--green); margin: 2rem 0 .75rem; padding: .4rem .8rem; background: rgba(16,185,129,.08); border-left: 3px solid var(--green); border-radius: 0 4px 4px 0; }
   h3 { font-size: 1rem; color: var(--blue); margin: 1.5rem 0 .5rem; }
-  p { margin-bottom: .75rem; color: var(--text); }
+  p { margin-bottom: .75rem; }
   pre { background: #0a0c14; border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.2rem; overflow-x: auto; margin: .75rem 0 1rem; }
-  code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: .85rem; }
+  code { font-family: 'Cascadia Code','Fira Code','Consolas',monospace; font-size: .85rem; }
   p code, li code { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: .1em .4em; color: #a5f3fc; font-size: .85rem; }
   pre code { color: #93c5fd; background: none; border: none; padding: 0; }
   blockquote { border-left: 3px solid var(--accent); padding: .5rem 1rem; background: rgba(124,58,237,.08); border-radius: 0 6px 6px 0; margin: .75rem 0; color: var(--muted); }
@@ -29,26 +29,33 @@
   strong { color: #fff; }
   a { color: var(--blue); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .updated { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 </style>
 </head>
 <body>
 <div class="container">
 <h1>Meshack&#39;s AI Stack — Cheatsheet</h1>
 <blockquote>
-<p>Crafted Edge Solutions &amp; Wellness Solutions Africa<br>Updated: May 2026 | GTX 960 4GB · Ollama 0.23.2 · Groq free · OpenRouter backup</p>
+<p>Crafted Edge Solutions &amp; Wellness Solutions Africa<br>Updated: September 2026 | GTX 960 4GB · Ollama 0.23.2 · Groq free · OpenRouter backup
+<strong>2026-09-09:</strong> Neovim rebuilt (native LSP + Django tooling), JetBrainsMono Nerd
+Font installed, and the terminal toolbox / recording sections added below.
+<strong>2026-09-09:</strong> Groq retired its entire Llama line. Every Groq alias now points at
+<code>openai/gpt-oss-120b</code> (or <code>-20b</code>). Verified working against <code>/v1/models</code>.</p>
 </blockquote>
 <hr>
 <h2>Quick Decision: What to Use</h2>
-<pre><code>Need it in 2 seconds, good quality?   →  groq &quot;...&quot;         (Llama 70B, free)
+<pre><code>Need it in 2 seconds, good quality?   →  groq &quot;...&quot;         (gpt-oss-120b, free)
 Private data / offline / instant?     →  ask &quot;...&quot;          (local 3B GPU)
 Best local quality, still private?    →  gemma (interactive) (4B GPU)
 Coding session with file access?      →  p  or  pask &quot;...&quot;  (Pi + Groq)
-Spotify / scheduling / web search?    →  h  or  hask &quot;...&quot;  (Hermes + Groq)
-Browse &amp; chat with history?           →  localhost:3000      (OpenWebUI)
+Spotify / scheduling / web search?    →  h  or  hask &quot;...&quot;  (Hermes — BROKEN, 413)
+Browse &amp; chat with history?           →  localhost:8080      (OpenWebUI)
+Which of my services are up?          →  links               (clickable URLs)
+Edit code with real LSP?              →  v &lt;file&gt;            (nvim + pyright/ruff)
+Record a terminal demo for a post?    →  rec &lt;name&gt;          (cast + GIF)
+What is making the box slow?          →  sysload             (load, hogs, orphans)
 </code></pre>
 <hr>
-<h2>groq — Your Workhorse (Llama 3.3 70B, 2 sec, free)</h2>
+<h2>groq — Your Workhorse (gpt-oss-120b, free)</h2>
 <pre><code class="language-bash"># Direct prompts
 groq &quot;write a blog post about X&quot;
 groq &quot;proposal email to [client] for [project]&quot;
@@ -68,6 +75,10 @@ groq &quot;write 10 email subject lines for a website launch offer&quot; &gt;&gt
 groq-fast &quot;give me 3 tagline options for a web agency&quot;
 </code></pre>
 <p><strong>Limits:</strong> 14,400 req/day · ~30 req/min · No system prompt overhead</p>
+<blockquote>
+<p>Errors are no longer silent. If the model id ever dies again you will see
+<code>groq: &lt;message&gt;</code> rather than empty output.</p>
+</blockquote>
 <hr>
 <h2>ask / askbig — Local GPU (Private, No Internet)</h2>
 <pre><code class="language-bash">ask &quot;write a WhatsApp follow-up for a client who went quiet&quot;
@@ -83,7 +94,7 @@ think      # deepseek-r1 1.5B — step-by-step reasoning
 </code></pre>
 <hr>
 <h2>p — Pi Coding Agent (reads/edits/runs files on your system)</h2>
-<pre><code class="language-bash"># Interactive session (Groq Llama 70B by default)
+<pre><code class="language-bash"># Interactive session (Groq gpt-oss-120b by default)
 p                                    # start in current dir
 cd ~/craftededgesolutions.africa &amp;&amp; p   # coding session on your site
 
@@ -93,10 +104,10 @@ pask &quot;fix the mobile nav menu in style.css&quot;
 pask &quot;write a Python script to batch-rename files in ~/content/&quot;
 
 # Model variants
-p70b     # Llama 3.3 70B (default, best)
-pfast    # Llama 3.1 8B (faster, lighter tasks)
-pcode    # Qwen3 32B (code-focused)
-pscout   # Llama 4 Scout (newest)
+p70b     # gpt-oss-120b (default, best)
+pfast    # gpt-oss-20b (faster, lighter tasks)
+pcode    # qwen3.8-27b (code-focused)
+pscout   # groq/compound (agentic, built-in web search)
 p-or     # OpenRouter backup (when Groq is busy)
 
 # Pipe-in shortcuts
@@ -110,7 +121,7 @@ cat code.js  | review
 <hr>
 <h2>h — Hermes Agent (Spotify, Web Search, Scheduling)</h2>
 <pre><code class="language-bash"># Interactive
-h                           # Groq Llama 70B, full toolset
+h                           # Groq gpt-oss-120b, full toolset (BROKEN — 413)
 
 # One-shot
 hask &quot;search for top web design trends in Kenya 2026&quot;
@@ -123,18 +134,30 @@ pause  /  skip  /  nowplaying
 spotify-refresh             # when token expires (401 error)
 
 # Model options
-h70b          # Llama 3.3 70B via Groq (default)
-hfast-groq    # Llama 3.1 8B via Groq (lighter)
-hthink        # DeepSeek R1 70B via Groq (reasoning)
+h70b          # gpt-oss-120b via Groq (default)
+hfast-groq    # gpt-oss-20b via Groq (lighter)
+hthink        # gpt-oss-120b via Groq (exposes a reasoning field)
 hgemma        # Gemma 4 31B via OpenRouter (backup)
 hlocal        # gemma3 4B local (offline/private)
 </code></pre>
 <blockquote>
 <p>Hermes needs 64K+ context — local 3B models won&#39;t work as Hermes providers.</p>
 </blockquote>
+<blockquote>
+<p><strong>BROKEN as of 2026-09-09.</strong> Every <code>hermes</code> call fails with
+<code>Request payload too large (413). Cannot compress further.</code> — on every Groq model,
+so it is not the model swap. <code>~/.hermes/skills</code> is 18M and gets loaded into the
+system prompt; Hermes cannot compress below the request limit. <strong>This also takes out
+<code>play</code> / <code>pause</code> / <code>skip</code> / <code>nowplaying</code></strong>, which are Hermes calls, not a Spotify client.
+<code>groq/compound</code> additionally returns 401 &quot;User not found&quot; through Hermes.
+Until fixed, use <code>groq</code> or <code>pask</code> instead.</p>
+</blockquote>
 <hr>
 <h2>OpenWebUI — Browser Chat Interface</h2>
-<p><strong>URL:</strong> <a href="http://localhost:3000">http://localhost:3000</a> (also <a href="http://100.124.18.6:3000">http://100.124.18.6:3000</a> via Tailscale)</p>
+<p><strong>URL:</strong> <a href="http://localhost:8080">http://localhost:8080</a> (also <a href="http://100.124.18.6:8080">http://100.124.18.6:8080</a> via Tailscale)</p>
+<blockquote>
+<p>Port 3000 is <strong>WAHA</strong>, not OpenWebUI. The old 3000 entry here was wrong.</p>
+</blockquote>
 <ul>
 <li>All local Ollama models in the model picker</li>
 <li>Add Groq: Settings → Connections → <code>https://api.groq.com/openai/v1</code> + API key</li>
@@ -190,23 +213,10 @@ docker restart open-webui
 <td>3.5 GB</td>
 <td>Best local quality</td>
 </tr>
-<tr>
-<td><code>qwen7</code></td>
-<td>qwen2.5:7b</td>
-<td>0.7 tok/s</td>
-<td>CPU only</td>
-<td>Batch / overnight</td>
-</tr>
-<tr>
-<td><code>coder7</code></td>
-<td>qwen2.5-coder:7b</td>
-<td>0.7 tok/s</td>
-<td>CPU only</td>
-<td>Complex code offline</td>
-</tr>
 </tbody></table>
 <blockquote>
-<p>GTX 960 Maxwell: 7B models CUDA-incompatible. Use cloud or CPU.</p>
+<p>GTX 960 Maxwell: 7B models CUDA-incompatible. Use cloud or CPU.
+<code>qwen7</code> / <code>coder7</code> were removed — neither the alias nor the 7B models exist here.</p>
 </blockquote>
 <hr>
 <h2>Cloud Models Reference</h2>
@@ -215,47 +225,51 @@ docker restart open-webui
 <tr>
 <th>Provider</th>
 <th>Model</th>
-<th>Context</th>
+<th>Notes</th>
 <th>Best For</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Groq</td>
-<td>Llama 3.3 70B</td>
-<td>128K</td>
+<td><code>openai/gpt-oss-120b</code></td>
+<td>reasoning in its own field</td>
 <td>Everything — default</td>
 </tr>
 <tr>
 <td>Groq</td>
-<td>Llama 3.1 8B</td>
-<td>128K</td>
+<td><code>openai/gpt-oss-20b</code></td>
+<td>same shape, smaller</td>
 <td>Fast/lightweight tasks</td>
 </tr>
 <tr>
 <td>Groq</td>
-<td>Qwen3 32B</td>
-<td>32K</td>
+<td><code>qwen/qwen3.8-27b</code></td>
+<td>clean plain output</td>
 <td>Code-heavy work</td>
 </tr>
 <tr>
 <td>Groq</td>
-<td>Llama 4 Scout</td>
-<td>10M</td>
-<td>Very long documents</td>
+<td><code>groq/compound</code></td>
+<td>agentic, built-in web search</td>
+<td>Research / lookups</td>
 </tr>
 <tr>
 <td>Groq</td>
-<td>DeepSeek R1 70B</td>
-<td>64K</td>
-<td>Reasoning / analysis</td>
+<td><code>qwen/qwen3.6-27b</code></td>
+<td><strong>avoid</strong> — leaks <code>&lt;think&gt;</code> into content</td>
+<td>—</td>
 </tr>
 <tr>
 <td>OpenRouter</td>
 <td>Gemma 4 31B</td>
-<td>128K</td>
-<td>Backup, rate-limited</td>
+<td>backup, rate-limited</td>
+<td>When Groq is busy</td>
 </tr>
 </tbody></table>
+<blockquote>
+<p>Groq&#39;s whole Llama line (3.1 / 3.3 / 4 Scout) and DeepSeek R1 were decommissioned.
+Check what is live: <code>curl -s https://api.groq.com/openai/v1/models -H &quot;Authorization: Bearer $GROQ_API_KEY&quot; | python3 -m json.tool | grep &#39;&quot;id&quot;&#39;</code></p>
+</blockquote>
 <hr>
 <h2>Money Workflows</h2>
 <h3>Blog / SEO Content</h3>
@@ -286,17 +300,310 @@ pask &quot;add Schema.org LocalBusiness structured data to index.html&quot;
 pask &quot;make the hero section load 30% faster — check for render-blocking resources&quot;
 </code></pre>
 <hr>
+<h2>Zellij Workspaces</h2>
+<pre><code class="language-bash">zj           # fzf layout picker
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Layout</th>
+<th>Tabs</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>coding</code></td>
+<td>Code · Git · AI</td>
+<td>active dev work</td>
+</tr>
+<tr>
+<td><code>agents</code></td>
+<td>Groq · Local</td>
+<td>running hermes/pi/qwen</td>
+</tr>
+<tr>
+<td><code>devops</code></td>
+<td>Local · Hetzner · Health</td>
+<td>docker + server ops</td>
+</tr>
+<tr>
+<td><code>local-ai</code></td>
+<td>Chat · Stack</td>
+<td>comparing models, GPU watch</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td>Browse · Git · AI Review</td>
+<td>code review + file nav</td>
+</tr>
+<tr>
+<td><code>servers</code></td>
+<td>Hub · Hetzner · Local · Spare</td>
+<td>SSH multi-server</td>
+</tr>
+<tr>
+<td><code>monitor</code></td>
+<td>Hetzner · Services · Local AI · Logs</td>
+<td>deep monitoring</td>
+</tr>
+</tbody></table>
+<p><strong>Web access (terminal in a browser, token-gated):</strong></p>
+<pre><code class="language-bash"># URLs — server runs as a systemd --user service, survives reboot:
+#   local    http://127.0.0.1:8082/
+#   tailnet  https://meshackvsyouall.tail4a4e8a.ts.net:8082/   (any tailnet device)
+# Login token lives in ~/.secrets as $ZELLIJ_WEB_TOKEN — paste into the web login form.
+
+systemctl --user status zellij-web     # service health
+systemctl --user restart zellij-web    # restart the server
+zellij web --status                    # quick up/down check
+zellij web --create-token              # mint a NEW login token (shown once)
+zellij web --list-tokens               # list (revoke: --revoke-token &lt;name&gt;)
+# Tailnet route:  tailscale serve --bg --https=8082 http://127.0.0.1:8082   (off: --https=8082 off)
+</code></pre>
+<p>Bound to 127.0.0.1; Tailscale Serve terminates HTTPS at the tailnet edge.
+<code>enforce_https_for_localhost false</code> in <code>config.kdl</code> lets the local hop be plain HTTP.</p>
+<hr>
+<h2>Editor — Neovim</h2>
+<pre><code class="language-bash">v file.py            # alias for nvim (also `vi`)
+nvim .               # opens the oil file browser at cwd
+</code></pre>
+<p>Rebuilt 2026-09-09. Neovim 0.12 native LSP (no lspconfig framework calls),
+treesitter highlighting, pyright pointed at <strong>each project&#39;s own <code>.venv</code></strong>, ruff
+for lint + format. Modular config under <code>~/.config/nvim/lua/</code>; full key reference
+in <code>~/.config/nvim/README.md</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Keys (leader = space)</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;space&gt;ff</code> <code>fg</code> <code>fb</code> <code>fr</code></td>
+<td>files · grep · buffers · recent</td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>file browser at the current file&#39;s directory</td>
+</tr>
+<tr>
+<td><code>&lt;space&gt;cf</code> <code>ca</code> <code>cr</code></td>
+<td>format · code action · rename</td>
+</tr>
+<tr>
+<td><code>&lt;space&gt;gg</code></td>
+<td>lazygit, floating</td>
+</tr>
+<tr>
+<td><code>&lt;space&gt;gs</code> <code>gr</code> · <code>]h</code> <code>[h</code></td>
+<td>stage hunk · reset hunk · next/prev hunk</td>
+</tr>
+<tr>
+<td><code>&lt;space&gt;dr</code> <code>dm</code> <code>dM</code> <code>ds</code> <code>dt</code></td>
+<td>manage.py runserver · migrate · makemigrations · shell · test</td>
+</tr>
+<tr>
+<td><code>&lt;space&gt;xx</code></td>
+<td>every diagnostic in the project (trouble)</td>
+</tr>
+<tr>
+<td><code>gd</code> · <code>K</code> · <code>]d</code> <code>[d</code></td>
+<td>definition · hover · next/prev diagnostic</td>
+</tr>
+<tr>
+<td><code>&lt;C-\&gt;</code></td>
+<td>floating terminal</td>
+</tr>
+</tbody></table>
+<p>Django-aware: any <code>.html</code> under <code>templates/</code> is forced to <code>htmldjango</code> (emmet,
+auto tag-close, djlint), and the <code>&lt;space&gt;d*</code> keys run <code>uv run python manage.py</code>
+from whichever <code>manage.py</code> sits above the current file — works in CES
+<code>platform/</code> and in the WSA repo without cd-ing first. The statusline shows which
+<code>.venv</code> pyright resolved.</p>
+<pre><code class="language-vim">:Lazy                 &quot; plugin status / update
+:MasonToolsInstall    &quot; reinstall servers + formatters (new machine)
+:checkhealth          &quot; diagnose
+:ConformInfo          &quot; which formatter runs in this buffer
+</code></pre>
+<p>Terminal font is <strong>JetBrainsMono NFM</strong> (Nerd Font, installed 2026-09-09) — icons
+come from that. If glyphs ever render as boxes, set <code>vim.g.have_nerd_font = false</code>
+in <code>~/.config/nvim/lua/config/options.lua</code> and everything falls back to ASCII.</p>
+<hr>
+<h2>Recording Demos — asciinema</h2>
+<p>For blog posts, insights drafts and client walkthroughs. <code>rec</code> records the
+session and converts it to a GIF in one go.</p>
+<pre><code class="language-bash">rec django-deploy    # → ~/recordings/django-deploy-&lt;stamp&gt;.cast + .gif
+                     #   stop with Ctrl+D or `exit`
+recordings           # list recordings, newest first
+
+# manual control
+asciinema rec demo.cast --overwrite --title &quot;demo&quot;
+asciinema play demo.cast                  # replay in the terminal
+asciinema upload demo.cast                # public link on asciinema.org
+agg demo.cast demo.gif --font-size 14 --speed 1.5 --theme monokai
+</code></pre>
+<p>Resize the pane to <strong>~100 columns before recording</strong> — a full-width capture is
+unreadable once embedded in a post. <code>rec</code> prints a ready-made <code>&lt;img&gt;</code> embed
+snippet when it finishes, pointing at <code>/recordings/&lt;slug&gt;.gif</code>.</p>
+<p><code>~/recordings/</code> is currently empty — nothing has been recorded yet.</p>
+<hr>
+<h2>Terminal Toolbox</h2>
+<p>Installed and already wired into the shell, but never written down.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Replaces</th>
+<th>What you get</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>z &lt;fragment&gt;</code></td>
+<td><code>cd ../../..</code></td>
+<td>jumps to the directory you visit most that matches (zoxide)</td>
+</tr>
+<tr>
+<td><code>zi</code></td>
+<td>—</td>
+<td>fzf picker over that same directory history</td>
+</tr>
+<tr>
+<td><code>Ctrl-R</code></td>
+<td>bash history</td>
+<td>atuin fuzzy search over full synced history; plain up-arrow still works</td>
+</tr>
+<tr>
+<td><code>bat file.py</code></td>
+<td><code>cat</code></td>
+<td>syntax highlighting, line numbers, paging</td>
+</tr>
+<tr>
+<td><code>btop</code></td>
+<td><code>top</code></td>
+<td>live CPU/RAM/disk/net, mouse-driven</td>
+</tr>
+<tr>
+<td><code>tldr &lt;cmd&gt;</code></td>
+<td><code>man</code></td>
+<td>just the practical examples</td>
+</tr>
+<tr>
+<td><code>lazygit</code></td>
+<td>raw <code>git</code></td>
+<td>stage hunks, rebase, branch visually (also <code>&lt;space&gt;gg</code> in nvim)</td>
+</tr>
+<tr>
+<td><code>gh</code></td>
+<td>the browser</td>
+<td><code>gh pr create</code>, <code>gh run watch</code>, <code>gh repo view --web</code></td>
+</tr>
+<tr>
+<td><code>rg &lt;pattern&gt;</code></td>
+<td><code>grep -r</code></td>
+<td>respects .gitignore, far faster</td>
+</tr>
+<tr>
+<td><code>uv</code> / <code>uvx</code></td>
+<td>pip / pipx</td>
+<td>project deps (<code>uv run ...</code>) and one-off tools (<code>uvx ruff</code>)</td>
+</tr>
+<tr>
+<td><code>agy</code></td>
+<td>—</td>
+<td>agent CLI (<code>agy -c</code> continues the last conversation)</td>
+</tr>
+</tbody></table>
+<pre><code class="language-bash">uv tool list                 # what is installed globally via uv
+uv tool install &lt;pkg&gt;        # add one (asciinema and tldr came this way)
+npm ls -g --depth=0          # node-side globals (gemini-cli, pi, omniroute)
+</code></pre>
+<hr>
+<h2>SSH &amp; Servers</h2>
+<pre><code class="language-bash">ssh hetzner           # Hetzner VPS (178.104.170.175, user: wellness)
+# Config: ~/.ssh/config — add new servers there
+</code></pre>
+<p><strong>sshd on this box is key-only since 2026-09-09</strong> (<code>PasswordAuthentication no</code> in
+<code>/etc/ssh/sshd_config.d/crafted.conf</code>). Any new device must have its pubkey appended to
+<code>~/.ssh/authorized_keys</code> first — a password will not get you in. To re-enable temporarily:
+<code>sudo sed -i &#39;s/^PasswordAuthentication no/PasswordAuthentication yes/&#39; /etc/ssh/sshd_config.d/crafted.conf &amp;&amp; sudo systemctl reload ssh</code></p>
+<h3>Reaching this box from the phone (Termux → proot Debian)</h3>
+<p>Requires <strong>Tailscale ON on the phone</strong> (node <code>meshack-gtx-18i</code>). Set up 2026-09-09;
+key <code>phone-proot-debian</code> is in authorized_keys on <em>both</em> this box and Hetzner.</p>
+<pre><code class="language-bash"># from inside `proot-distro login debian` on the phone:
+ssh pc                # this WSL box  -&gt; 100.124.18.6, user craftededgesolutions-africa
+ssh hetzner           # Hetzner direct -&gt; 178.104.170.175, user wellness
+</code></pre>
+<p><code>~/.ssh/config</code> inside proot Debian:</p>
+<pre><code>Host pc
+    HostName 100.124.18.6
+    User craftededgesolutions-africa
+    IdentityFile ~/.ssh/id_ed25519
+    ServerAliveInterval 60
+
+Host hetzner wsa
+    HostName 178.104.170.175
+    User wellness
+    IdentityFile ~/.ssh/id_ed25519
+    ServerAliveInterval 60
+</code></pre>
+<p>Browser alternative (no SSH client needed): <code>https://meshackvsyouall.tail4a4e8a.ts.net:8082/</code>
+— log in with <code>$ZELLIJ_WEB_TOKEN</code> from <code>~/.secrets</code>.</p>
+<hr>
+<h2>Android / Phone</h2>
+<pre><code class="language-bash">adb-phone    # connect to phone over WiFi (10.11.0.88:5555)
+adb-screen   # mirror phone screen (720p, 30fps, screen stays on)
+adb-mirror   # mirror + turn phone screen off (battery save)
+adb-wifi     # switch USB→wireless (run while plugged in first)
+
+# USB in WSL: open admin PowerShell on Windows →
+#   usbipd attach --wsl --busid 2-1
+# Auto-attach script: C:\Users\mesha\Documents\usb-wsl-autoattach.ps1
+</code></pre>
+<hr>
 <h2>System &amp; Monitoring</h2>
-<pre><code class="language-bash">gpu          # GPU stats (VRAM, utilization, temp)
+<pre><code class="language-bash">links        # Active services as clickable URLs (ctrl/cmd-click to open)
+links -t     # Same, but tailnet URLs for reaching this box remotely
+gpu          # GPU stats (VRAM, utilization, temp)
 gpuwatch     # Live GPU monitor (Ctrl+C to exit)
 models       # All Ollama models installed
 loaded       # Currently loaded models (VRAM usage)
 services     # Docker containers status
 df -h        # Disk space
 free -h      # RAM usage
+
+sysload      # What is slow RIGHT NOW: load vs cores, real available RAM,
+             # top CPU/RAM hogs, zellij session count, orphaned agent processes
+reap         # Prune dead zellij sessions + orphaned agents (PPID==1), then show log
+reap-dry     # Same, report only — changes nothing
+reaplog      # Reaper history
+
+ports        # Port registry: every known service, its port, and up/down
+freeport     # Free a port that something is squatting on
+btop         # Full interactive system monitor
+watch -n10 --color ces-crawl   # Command-centre dashboard (the Zellij Boss tab)
+</code></pre>
+<p>This box runs a lot at once — Docker stacks, Ollama, agents. A load average
+above ~8 on 4 threads means everything, editors included, will feel slow;
+<code>sysload</code> tells you which process to kill first.</p>
+<p><code>links</code> probes each known port and prints only what is listening, so it doubles as
+an up/down check. It uses OSC 8 terminal hyperlinks — Windows Terminal, WezTerm,
+VS Code and iTerm2 render them clickable; anywhere else you still get the plain URL.
+<code>links -t</code> needs <code>tailscale serve</code> running for that port.</p>
+<hr>
+<h2>Notifications — ntfy</h2>
+<pre><code class="language-bash">notify &quot;deploy finished&quot;                    # alias → topic crafted-ai on :7180
+</code></pre>
+<p>The alias is a one-liner. There is a <strong>fuller <code>notify</code> script</strong> at
+<code>~/.local/bin/notify</code> (title, priority, tags, click-through URL, stdin body) that
+the alias shadows, and whose built-in default server (<code>:8091</code>) is stale — ntfy
+actually listens on <strong>7180</strong>. To use the script:</p>
+<pre><code class="language-bash">command notify -t &quot;Deploy&quot; -p high -T rocket -c https://ces.africa crafted-ai &quot;shipped&quot; \
+  -s http://localhost:7180
+echo &quot;long body&quot; | command notify crafted-ai -s http://localhost:7180
 </code></pre>
 <hr>
 <h2>Services Map</h2>
+<p>Run <code>links</code> to see which of these are actually up, as clickable URLs.</p>
 <table>
 <thead>
 <tr>
@@ -308,7 +615,7 @@ free -h      # RAM usage
 </thead>
 <tbody><tr>
 <td>OpenWebUI</td>
-<td>localhost:3000</td>
+<td>localhost:8080</td>
 <td>auto (Docker)</td>
 <td><code>docker restart open-webui</code></td>
 </tr>
@@ -317,6 +624,66 @@ free -h      # RAM usage
 <td>localhost:11434</td>
 <td>auto (systemd)</td>
 <td><code>/etc/systemd/system/ollama.service</code></td>
+</tr>
+<tr>
+<td>WAHA (WhatsApp)</td>
+<td>localhost:3000</td>
+<td>auto (Docker)</td>
+<td><code>docker restart waha</code></td>
+</tr>
+<tr>
+<td>ntfy</td>
+<td>localhost:7180</td>
+<td>auto (Docker)</td>
+<td><code>docker restart ntfy</code></td>
+</tr>
+<tr>
+<td>BillionMail</td>
+<td>localhost:7080 / 7443</td>
+<td>auto (Docker)</td>
+<td><code>~/billionmail/</code></td>
+</tr>
+<tr>
+<td>Headscale</td>
+<td>3478/udp, 7190-7191</td>
+<td>auto (Docker)</td>
+<td><code>~/.headscale/</code></td>
+</tr>
+<tr>
+<td>Zellij web</td>
+<td>localhost:8082</td>
+<td><code>systemd --user</code></td>
+<td><code>zellij web --status</code></td>
+</tr>
+<tr>
+<td>Odysseus</td>
+<td>localhost:7000</td>
+<td>compose (<strong>down</strong>)</td>
+<td><code>~/odysseus/</code></td>
+</tr>
+<tr>
+<td>SearXNG</td>
+<td>localhost:7100</td>
+<td>compose (<strong>down</strong>)</td>
+<td><code>~/odysseus/</code></td>
+</tr>
+<tr>
+<td>ChromaDB</td>
+<td>localhost:8100</td>
+<td>compose (<strong>down</strong>)</td>
+<td><code>~/odysseus/</code></td>
+</tr>
+<tr>
+<td>OmniRoute</td>
+<td>localhost:20128</td>
+<td><code>omniroute serve</code> (<strong>down</strong>)</td>
+<td><code>~/.omniroute/</code></td>
+</tr>
+<tr>
+<td>WA Agent</td>
+<td>localhost:8123</td>
+<td>auto (systemd user)</td>
+<td><code>~/wa-agent/agent.py</code></td>
 </tr>
 <tr>
 <td>Listmonk</td>
@@ -339,16 +706,73 @@ free -h      # RAM usage
 </tbody></table>
 <p><strong>All above accessible remotely via Tailscale at 100.124.18.6:PORT</strong></p>
 <hr>
+<h2>Every Alias — Full Index</h2>
+<p>Grouped by what you are trying to do. <code>alias</code> on its own prints the live list;
+definitions live in <code>~/.bash_aliases</code>.</p>
+<p><strong>This cheatsheet</strong></p>
+<pre><code class="language-bash">cheat            # read it in the terminal (less)
+cheat-build      # rebuild the HTML after editing cheatsheet.md
+cheat-web        # print the browser + tailnet URLs
+</code></pre>
+<p><strong>Content pipeline</strong></p>
+<pre><code class="language-bash">blog &quot;topic&quot;     # blog-writer.py → ~/blog-drafts/
+blogs            # list recent blog drafts
+draft-post       # Pi + SEO prompt for a craftededgesolutions.africa post
+tutor            # daily-tutor.py → ~/dev-lessons/
+lesson           # read today&#39;s lesson
+lessons          # list recent lessons
+</code></pre>
+<p><strong>Git &amp; GitHub</strong></p>
+<pre><code class="language-bash">lg               # lazygit
+prs              # gh pr list
+issues           # gh issue list
+ghrepo           # open this repo on github.com
+</code></pre>
+<p><strong>Ollama / local models</strong></p>
+<pre><code class="language-bash">models           # installed models          loaded    # what is in VRAM now
+olpull &lt;model&gt;   # pull a model              qwen3t    # qwen3:4b with thinking mode
+register-models  # re-register custom modelfiles after an Ollama update
+hlocal-fast      # hermes on local qwen-fast   hlocal-gemma  # hermes on gemma3:4b
+agent / agent3   # qwen3-agent.py — local tool-use agent (bash + file read/write)
+hdash            # hermes TUI dashboard on 127.0.0.1:9119
+</code></pre>
+<p><strong>Networking (Tailscale ⇄ Headscale)</strong></p>
+<pre><code class="language-bash">net-status       # tailscale status, short
+use-tailscale    # switch this node to Tailscale cloud control plane
+use-headscale    # switch to the local self-hosted headscale (:7190)
+hs / hs-nodes / hs-keys / hs-status   # headscale admin inside the container
+fix-network      # re-point headscale + OpenWebUI after the WSL2 IP changes
+fix-webui        # re-point OpenWebUI at Ollama only
+</code></pre>
+<p><strong>Phone</strong></p>
+<pre><code class="language-bash">adb-wifi         # switch USB → wireless (run while still plugged in)
+adb-phone        # connect over WiFi        adb-devices  # list attached devices
+adb-screen       # mirror screen            adb-mirror   # mirror + phone screen off
+myip             # print phone-facing URLs for this box
+</code></pre>
+<p><strong>Logs</strong></p>
+<pre><code class="language-bash">cronlog          # tail -f ~/logs/cron.log
+reaplog          # reaper history
+recordings       # asciinema output, newest first
+</code></pre>
+<p><strong>Shell basics:</strong> <code>ll</code> <code>la</code> <code>l</code> (listings), <code>..</code> <code>...</code> (up one/two), <code>df</code> <code>free</code>
+(human-readable), <code>grep</code> (always coloured).</p>
 <h2>Key File Locations</h2>
 <pre><code>~/.bashrc                          ← API keys (top of file, loads always)
 ~/.bash_aliases                    ← All aliases + groq/ask functions
 ~/.hermes/config.yaml              ← Hermes: model, provider, Groq config
 ~/.hermes/auth.json                ← Spotify token
-~/.pi/agent/settings.json          ← Pi: default Groq/Llama 70B
+~/.pi/agent/settings.json          ← Pi: default Groq/gpt-oss-120b
 ~/.ollama/modelfiles/              ← Custom model definitions
 ~/.ollama/register-fast-models.sh  ← Re-register models after update
+~/wsa-roaming-assets/              ← WSA knowledge base (GitHub: meshack-vs-you-all/wsa-roaming-assets)
+~/wsa-roaming-assets/normalised/   ← AI-ready text extracts — run normalise.py after adding docs
+~/wa-agent/agent.py                ← WhatsApp auto-reply agent (Meshack/CES persona, Groq — check its model id)
+~/.config/nvim/                    ← Neovim config (see its README.md for keys)
+~/recordings/                      ← asciinema .cast + .gif output from `rec`
+~/scripts/                         ← sysload, reap-idle, blog-writer, daily-tutor, update-*
 ~/cheatsheet.md                    ← This file
-~/cheatsheet.html                  ← Browser version (localhost:8000/cheatsheet.html)
+~/craftededgesolutions.africa/cheatsheet.html  ← Browser version (localhost:8000/cheatsheet.html)
 ~/craftededgesolutions.africa/SYSTEM_STATE.md  ← Full system state doc
 ~/ai-stack-guide.md                ← Detailed guide with use cases
 </code></pre>
@@ -363,7 +787,11 @@ free -h      # RAM usage
 </thead>
 <tbody><tr>
 <td><code>groq</code> returns nothing</td>
-<td><code>echo $GROQ_API_KEY</code> — if empty, open new terminal</td>
+<td>Errors are printed now. <code>groq: model ... does not exist</code> means Groq retired it — list live models (see Cloud Models) and update <code>~/.bash_aliases</code>, <code>~/.pi/agent/settings.json</code>, <code>~/.hermes/config.yaml</code></td>
+</tr>
+<tr>
+<td><code>groq: Invalid API Key</code></td>
+<td>Key rotated or unset — check <code>~/.secrets</code></td>
 </tr>
 <tr>
 <td>Spotify 401</td>
@@ -375,7 +803,7 @@ free -h      # RAM usage
 </tr>
 <tr>
 <td>OpenWebUI blank</td>
-<td><code>docker restart open-webui</code></td>
+<td><code>docker restart open-webui</code> (it is on <strong>8080</strong>)</td>
 </tr>
 <tr>
 <td>Ollama not responding</td>
@@ -383,11 +811,27 @@ free -h      # RAM usage
 </tr>
 <tr>
 <td>7B model crashes</td>
-<td>Expected — use <code>qwen7</code> (CPU) or <code>groq</code> (cloud)</td>
+<td>Expected on a 4 GB Maxwell card — use <code>groq</code> (cloud) or a 3-4B local model</td>
 </tr>
 <tr>
 <td>Listmonk down</td>
 <td><code>docker start listmonk_app</code></td>
+</tr>
+<tr>
+<td>nvim icons show as boxes</td>
+<td>Terminal font must be <strong>JetBrainsMono NFM</strong>; or set <code>vim.g.have_nerd_font = false</code></td>
+</tr>
+<tr>
+<td>nvim: Django imports &quot;could not be resolved&quot;</td>
+<td>The project has no <code>.venv</code> where pyright looks — <code>uv sync</code> in the project root</td>
+</tr>
+<tr>
+<td>nvim slow to attach LSP</td>
+<td>Check <code>sysload</code>; pyright waits on CPU when load is high</td>
+</tr>
+<tr>
+<td><code>notify</code> ignores <code>-t/-p</code> flags</td>
+<td>The alias shadows the script — use <code>command notify ... -s http://localhost:7180</code></td>
 </tr>
 <tr>
 <td>Website 8000 down</td>
@@ -398,8 +842,8 @@ free -h      # RAM usage
 <td>Pipe targeted content instead of letting Pi read full files</td>
 </tr>
 <tr>
-<td>Hermes TPM error</td>
-<td>Its system prompt is large — Groq free tier handles normal use fine</td>
+<td>Hermes 413 / TPM error</td>
+<td>Currently broken — see the Hermes section. Prune <code>~/.hermes/skills</code> (18M) and the 57 stored sessions, then retry</td>
 </tr>
 <tr>
 <td>Keys not loading</td>
@@ -416,7 +860,7 @@ curl -s -o /dev/null -w &quot;%{http_code}&quot; localhost:8000  # Website
 sudo tailscale status
 </code></pre>
 <hr>
-<p><em>Last updated: May 2026 — open browser version: <a href="http://localhost:8000/cheatsheet.html">http://localhost:8000/cheatsheet.html</a></em></p>
+<p><em>Last updated: 9 September 2026 — open browser version: <a href="http://localhost:8000/cheatsheet.html">http://localhost:8000/cheatsheet.html</a></em></p>
 </div>
 </body>
 </html>
